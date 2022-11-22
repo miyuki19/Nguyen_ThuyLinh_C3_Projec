@@ -3,8 +3,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.test.util.ReflectionTestUtils;
 
 class RestaurantTest {
     Restaurant restaurant;
@@ -23,7 +27,7 @@ class RestaurantTest {
         Restaurant testRestaurant = Mockito.spy(restaurant);
         Mockito.when(testRestaurant.getCurrentTime()).thenReturn(LocalTime.parse("10:30:00"));
 
-        assertEquals(true, testRestaurant.isRestaurantOpen());
+        assertTrue(testRestaurant.isRestaurantOpen());
     }
 
     @Test
@@ -31,7 +35,7 @@ class RestaurantTest {
         Restaurant testRestaurant = Mockito.spy(restaurant);
         Mockito.when(testRestaurant.getCurrentTime()).thenReturn(LocalTime.parse("22:31:00"));
 
-        assertEquals(false, testRestaurant.isRestaurantOpen());
+        assertFalse(testRestaurant.isRestaurantOpen());
     }
 
     //<<<<<<<<<<<<<<<<<<<<<<<<<OPEN/CLOSED>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -65,4 +69,24 @@ class RestaurantTest {
                 ()->restaurant.removeFromMenu("French fries"));
     }
     //<<<<<<<<<<<<<<<<<<<<<<<MENU>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>CUSTOMER: ADD ITEMS TO ORDER<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    @Test
+    //Test method addItemsToOrder
+    //when adding items to order
+    //should return the cost of order
+    //and the cost should equal the total price of items have been added to order
+    public void add_items_to_order_order_cost_should_be_total_of_items_price(){
+        Restaurant testRestaurant = Mockito.spy(restaurant);
+        List<Item> mockMenu = new ArrayList<>();
+        mockMenu.add(new Item("Sweet corn soup", 119));
+        mockMenu.add(new Item("Vegetable lasagne", 269));
+        mockMenu.add(new Item("Sizzling brownie", 319));
+        ReflectionTestUtils.setField(testRestaurant, "menu", mockMenu);
+
+        //add items to order and calculate order cost
+        int orderCost = testRestaurant.addItemsToOrder(Arrays.asList("Sweet corn soup", "Vegetable lasagne"));
+        assertEquals(388, orderCost);
+    }
+    //<<<<<<<<<<<<<<<<<<<<<<<CUSTOMER: ADD ITEMS TO ORDER>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 }
