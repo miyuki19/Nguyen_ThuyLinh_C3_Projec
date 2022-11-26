@@ -62,23 +62,17 @@ public class Restaurant {
         return name;
     }
 
-    public int addItemsToOrder(List<String> items){
-        if(items == null) return this.orderCost;
-        for(String itemName : items){
-            Item item = findItemByName(itemName);
-            if(item == null) continue;
-            this.orderCost += item.getPrice();
-        }
+    public int addItemToOrder(String itemName){
+        Item item = findItemByName(itemName);
+        if(item == null) return this.orderCost;
+        this.orderCost += item.getPrice();
         return this.orderCost;
     }
 
-    public int removeItemsFromOrder(List<String> items){
-        if(items == null) return this.orderCost;
-        for(String itemName : items){
-            Item item = findItemByName(itemName);
-            if(item == null) continue;
-            this.orderCost -= item.getPrice();
-        }
+    public int removeItemFromOrder(String itemName){
+        Item item = findItemByName(itemName);
+        if(item == null) return this.orderCost;
+        this.orderCost -= item.getPrice();
         return this.orderCost;
     }
 

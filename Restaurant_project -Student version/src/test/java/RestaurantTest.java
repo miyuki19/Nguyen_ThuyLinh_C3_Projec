@@ -87,9 +87,11 @@ class RestaurantTest {
         mockMenu.add(new Item("Sizzling brownie", 319));
         ReflectionTestUtils.setField(mockRestaurant, "menu", mockMenu);
 
-        //add items to order and calculate order cost
-        int orderCost = mockRestaurant.addItemsToOrder(Arrays.asList("Sweet corn soup", "Vegetable lasagne"));
-        assertEquals(388, orderCost);
+        //add item to order and verify order cost
+        assertEquals(119, mockRestaurant.addItemToOrder("Sweet corn soup"));
+
+        //add one more item, order cost should be total price of these 2 items
+        assertEquals(388, mockRestaurant.addItemToOrder("Vegetable lasagne"));
     }
 
     @Test
@@ -101,7 +103,7 @@ class RestaurantTest {
         //cost of order before adding items
         int orderCostBeforeAdding = restaurant.getOrderCost();
         //cost of order after adding null
-        int orderCostAfterAdding = restaurant.addItemsToOrder(null);
+        int orderCostAfterAdding = restaurant.addItemToOrder(null);
 
         assertEquals(orderCostBeforeAdding, orderCostAfterAdding);
     }
@@ -113,19 +115,20 @@ class RestaurantTest {
     //and the cost should decrease amount equal items price
     public void remove_items_from_order_order_cost_should_decrease_amount_of_items_price(){
         mockRestaurant = Mockito.spy(restaurant);
-        //cost of order before removing items
-        int orderCostBeforeRemoving = mockRestaurant.getOrderCost();
-
         List<Item> mockMenu = new ArrayList<>();
         mockMenu.add(new Item("Sweet corn soup", 119));
         mockMenu.add(new Item("Vegetable lasagne", 269));
         mockMenu.add(new Item("Sizzling brownie", 319));
         ReflectionTestUtils.setField(mockRestaurant, "menu", mockMenu);
+        ReflectionTestUtils.setField(mockRestaurant, "orderCost", 588);
+
+        //cost of order before removing items = mock value (588)
+        int orderCostBeforeRemoving = mockRestaurant.getOrderCost();
 
         //remove items from order and calculate order cost
-        int orderCostAfterRemoving = mockRestaurant.removeItemsFromOrder(Arrays.asList("Sweet corn soup", "Sizzling brownie"));
-        //now order cost should decrease amount = 119 + 319 = 438
-        assertEquals(438,orderCostBeforeRemoving-orderCostAfterRemoving);
+        int orderCostAfterRemoving = mockRestaurant.removeItemFromOrder("Sizzling brownie");
+        //now order cost should decrease amount = Sizzling brownie price = 319
+        assertEquals(319,orderCostBeforeRemoving-orderCostAfterRemoving);
     }
 
     @Test
@@ -137,7 +140,7 @@ class RestaurantTest {
         //cost of order before removing items
         int orderCostBeforeRemoving = restaurant.getOrderCost();
         //cost of order after removing null
-        int orderCostAfterRemoving = restaurant.removeItemsFromOrder(null);
+        int orderCostAfterRemoving = restaurant.removeItemFromOrder(null);
 
         assertEquals(orderCostBeforeRemoving, orderCostAfterRemoving);
     }
